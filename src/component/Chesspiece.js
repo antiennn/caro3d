@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import * as THREE from "three";
 
 const ChessPiece = ({ position, color }) => {
-  const radiusTop = 1;
-  const radiusBottom = 1;
+  const radiusTop = 0.8;
+  const radiusBottom = 0.8;
   const height = 1.5;
   const radialSegments = 64;
   const [newPosition,setNewPosition] = useState([]);

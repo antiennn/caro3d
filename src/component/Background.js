@@ -28,7 +28,7 @@ const Background = () =>{
     >
       <Suspense >
         <OrbitControls
-          enableZoom={false}
+          minZoom={0} maxZoom={0}
           maxPolarAngle={Math.PI /3}
           minPolarAngle={Math.PI /8}
         />

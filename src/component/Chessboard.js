@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import * as THREE from "three";
-import { OrbitControls,Text, useMatcapTexture } from "@react-three/drei";
+import { OrbitControls,Text} from "@react-three/drei";
+import ChessPiece from "./Chesspiece";
 
 const Chessboard = () => {
   const mountRef = useRef(null);
@@ -15,11 +16,11 @@ const Chessboard = () => {
   const numbers = '12345';
   for (let i = 0; i < boardSize; i++) {
     labels.push(
-      <Text rotation={[-Math.PI / 2, 0, Math.PI/4]} color="black"  position={[i - Math.floor(boardSize / 2) + 0.1, 0.3,  Math.floor(boardSize / 2) + 1]}direction="ltr" fontSize={0.3} key={`bottom-${i}`}>
+      <Text rotation={[-Math.PI / 2, 0, Math.PI/4]} color="gray"  position={[i - Math.floor(boardSize / 2) + 0.1, 0.3,  Math.floor(boardSize / 2) + 1]}direction="ltr" fontSize={0.3} key={`bottom-${i}`}>
         {letters[4-i]}
       </Text>,
       
-      <Text rotation={[-Math.PI / 2, 0, Math.PI / 4]}  color="black"  position={[Math.floor(boardSize / 2) + 1, 0.3, i - Math.floor(boardSize / 2) + 0.1]} fontSize={0.3}  key={`left-${i}`}>
+      <Text rotation={[-Math.PI / 2, 0, Math.PI / 4]}  color="gray"  position={[Math.floor(boardSize / 2) + 1, 0.3, i - Math.floor(boardSize / 2) + 0.1]} fontSize={0.3}  key={`left-${i}`}>
         {numbers[4-i]}
       </Text>,
       
@@ -69,6 +70,24 @@ const Chessboard = () => {
     }
   }
 
+  const pieces = [
+    <ChessPiece position={[-1, 0.41, -1]} color="red" key="red" />,
+    <ChessPiece position={[-1, 0.91, -1]} color="blue" key="blue" />,
+    <ChessPiece position={[0, 0.41, -1]} color="blue" key="blue" />,
+    <ChessPiece position={[-1, 0.41, 0]} color="blue" key="blue" />,
+    <ChessPiece position={[-2, 0.41, -1]} color="blue" key="blue" />,
+    <ChessPiece position={[-1, 0.41, -2]} color="blue" key="blue" />,
+    <ChessPiece position={[0, 0.91, -1]} color="blue" key="blue" />,
+    <ChessPiece position={[-1, 0.91, 0]} color="blue" key="blue" />,
+    <ChessPiece position={[-2, 0.91, -1]} color="blue" key="blue" />,
+    <ChessPiece position={[-1, 0.91, -2]} color="blue" key="blue" />,
+    <ChessPiece position={[0, 0.41, 0]} color="blue" key="blue" />,
+    <ChessPiece position={[0, 0.91, 0]} color="blue" key="blue" />,
+    <ChessPiece position={[0, 1.41, 0]} color="blue" key="blue" />,
+    <ChessPiece position={[0, 1.91, 0]} color="blue" key="blue" />,
+  ];
+  
+
   return (
     <div ref={mountRef} style={{ width: "100vw", height: "100vh" }}>
       <Canvas camera={camera}>
@@ -77,6 +96,7 @@ const Chessboard = () => {
         <OrbitControls />
         {tiles}
         {labels}
+        {pieces}
       </Canvas>
     </div>
   );

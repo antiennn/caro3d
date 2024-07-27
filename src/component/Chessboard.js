@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
-import { Canvas } from "@react-three/fiber";
 import * as THREE from "three";
 import { OrbitControls,Text} from "@react-three/drei";
 import ChessPiece from "./Chesspiece";
@@ -7,8 +6,8 @@ import ChessPiece from "./Chesspiece";
 const Chessboard = () => {
   const mountRef = useRef(null);
   const boardSize = 5;
-  const tileSize = 0.85;
-  const borderWidth = 0.1;
+  const tileSize = 2.5;
+  const borderWidth = 0.5;
   // const [pieces, setPieces] = useState([]);
   const [camera, setCamera] = useState(null);
   const labels = [];
@@ -16,11 +15,11 @@ const Chessboard = () => {
   const numbers = '12345';
   for (let i = 0; i < boardSize; i++) {
     labels.push(
-      <Text rotation={[-Math.PI / 2, 0, Math.PI/4]} color="gray"  position={[i - Math.floor(boardSize / 2) + 0.1, 0.3,  Math.floor(boardSize / 2) + 1]}direction="ltr" fontSize={0.3} key={`bottom-${i}`}>
+      <Text rotation={[-Math.PI / 2, 0, Math.PI / 4]} color="black"  position={[i*3 - Math.floor(boardSize), 4.3,  Math.floor(boardSize *1.5) + 3]}direction="ltr" fontSize={1} key={`bottom-${i}`}>
         {letters[4-i]}
       </Text>,
       
-      <Text rotation={[-Math.PI / 2, 0, Math.PI / 4]}  color="gray"  position={[Math.floor(boardSize / 2) + 1, 0.3, i - Math.floor(boardSize / 2) + 0.1]} fontSize={0.3}  key={`left-${i}`}>
+      <Text rotation={[-Math.PI / 2, 0, Math.PI / 4]}  color="black"  position={[Math.floor(boardSize *1.5) + 3, 4.3, i*3 - Math.floor(boardSize)]} fontSize={1}  key={`left-${i}`}>
         {numbers[4-i]}
       </Text>,
       
@@ -42,16 +41,14 @@ const Chessboard = () => {
 
   const createTile = useCallback(
     (x, z) => (
-      <group position={[x, 0, z]} key={`${x}-${z}`}>
-        {/* Border */}
+      <group position={[x, 4, z]} key={`${x}-${z}`}>
+        
         <mesh position={[0, 0, 0]}>
           <boxGeometry
             args={[tileSize + borderWidth * 2, 0.29, tileSize + borderWidth * 2]}
           />
           <meshStandardMaterial color={"#000000"} /> {/* Border color */}
         </mesh>
-
-        {/* Tile */}
         <mesh position={[0, 0.01, 0]}>
           <boxGeometry args={[tileSize, 0.3, tileSize]} />
           <meshStandardMaterial color={"#cef614"} /> {/* Tile color */}
@@ -65,40 +62,29 @@ const Chessboard = () => {
   for (let i = 0; i < boardSize; i++) {
     for (let j = 0; j < boardSize; j++) {
       tiles.push(
-        createTile(i - Math.floor(boardSize / 2), j - Math.floor(boardSize / 2))
+        createTile(i*3 - Math.floor(boardSize), j*3 - Math.floor(boardSize))
       );
     }
   }
 
   const pieces = [
-    <ChessPiece position={[-1, 0.41, -1]} color="red" key="red" />,
-    <ChessPiece position={[-1, 0.91, -1]} color="blue" key="blue" />,
-    <ChessPiece position={[0, 0.41, -1]} color="blue" key="blue" />,
-    <ChessPiece position={[-1, 0.41, 0]} color="blue" key="blue" />,
-    <ChessPiece position={[-2, 0.41, -1]} color="blue" key="blue" />,
-    <ChessPiece position={[-1, 0.41, -2]} color="blue" key="blue" />,
-    <ChessPiece position={[0, 0.91, -1]} color="blue" key="blue" />,
-    <ChessPiece position={[-1, 0.91, 0]} color="blue" key="blue" />,
-    <ChessPiece position={[-2, 0.91, -1]} color="blue" key="blue" />,
-    <ChessPiece position={[-1, 0.91, -2]} color="blue" key="blue" />,
-    <ChessPiece position={[0, 0.41, 0]} color="blue" key="blue" />,
-    <ChessPiece position={[0, 0.91, 0]} color="blue" key="blue" />,
-    <ChessPiece position={[0, 1.41, 0]} color="blue" key="blue" />,
-    <ChessPiece position={[0, 1.91, 0]} color="blue" key="blue" />,
+    <ChessPiece position={[0, 0, 0]} color="red" key="red" />,
+    <ChessPiece position={[0, 1, 0]} color="blue" key="blue" />,
+    
   ];
   
 
   return (
-    <div ref={mountRef} style={{ width: "100vw", height: "100vh" }}>
-      <Canvas camera={camera}>
-        <ambientLight intensity={1} />
+    
+      <mesh camera={camera}>
+        <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} />
-        <OrbitControls />
+        <OrbitControls enableZoom={false}/>
         {tiles}
         {labels}
         {pieces}
-      </Canvas>
-    </div>
+      </mesh>
+    
   );
 };
 

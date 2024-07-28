@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useFrame } from "@react-three/fiber";
+import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 const ChessPiece = ({ position, color }) => {
@@ -7,6 +8,33 @@ const ChessPiece = ({ position, color }) => {
   const height = 1.5;
   const radialSegments = 64;
   const [newPosition,setNewPosition] = useState([]);
+  const [isAnimating, setIsAnimating] = useState(true);
+  const meshRef1 = useRef();
+  const meshRef2 = useRef();
+  
+  const [yPosition, setYPosition] = useState(position[1]*1.5 + 10);
+
+  useFrame(() => {
+    if (isAnimating) {
+    // Update yPosition
+      setYPosition((prev) => {
+        const newPosition = prev - 0.05;
+        
+        if (newPosition < position[1]*1.5 +5) {
+          console.log(newPosition)
+          setIsAnimating(false);
+          return prev;
+        }
+        return newPosition;
+      });
+
+      // Apply translation
+      if (meshRef1.current && meshRef2.current) {
+        meshRef1.current.position.y = yPosition;
+        meshRef2.current.position.y = yPosition;
+      }
+    }
+  });
 
   useEffect(()=>{
     const getNewPosition = ()=>{
@@ -24,13 +52,13 @@ const ChessPiece = ({ position, color }) => {
   },[position]);
   return (
     <>
-      <mesh position={newPosition}>
+      <mesh ref={meshRef1} position={newPosition}>
         <cylinderGeometry
           args={[radiusTop, radiusBottom, height, radialSegments]}
         />
         <meshStandardMaterial color={"black"} />
       </mesh>
-      <mesh position={newPosition}>
+      <mesh ref={meshRef2} position={newPosition}>
         <cylinderGeometry
           args={[radiusTop + 0.45, radiusBottom + 0.45, height - 0.01, 5]}
         />
@@ -53,5 +81,6 @@ const ChessPiece = ({ position, color }) => {
     </>
   );
 };
+
 
 export default ChessPiece;

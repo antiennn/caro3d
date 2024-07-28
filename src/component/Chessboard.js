@@ -72,7 +72,7 @@ const Chessboard = () => {
           />
           <meshStandardMaterial color={"#000000"} /> {/* Border color */}
         </mesh>
-        <mesh position={[0, 0.01, 0]}>
+        <mesh position={[0, 0.01, 0]} >
           <boxGeometry args={[tileSize, 0.3, tileSize]} />
           <meshStandardMaterial color={"#cef614"} /> {/* Tile color */}
         </mesh>
@@ -93,10 +93,13 @@ const Chessboard = () => {
   const pieces = [
     <ChessPiece position={[0, 0, 0]} color="red" key="red" />,
     <ChessPiece position={[0, 1, 0]} color="blue" key="blue" />,
+    <ChessPiece position={[1, 0, 0]} color="red" key="red" />,
+    <ChessPiece position={[1, 1, 0]} color="blue" key="blue" />,
+    <ChessPiece position={[1, 2, 0]} color="blue" key="blue" />,
   ];
 
   return (
-    <mesh camera={camera}>
+    <mesh camera={camera} >
       <ambientLight intensity={0.3} />
       <OrbitControls
         minDistance={35}

@@ -19,7 +19,7 @@ const Chessboard = () => {
     labels.push(
       <Text
         rotation={[-Math.PI / 2, 0, Math.PI / 4]}
-        color="black"
+        color="white"
         position={[
           i * 3 - Math.floor(boardSize),
           4.3,
@@ -34,7 +34,7 @@ const Chessboard = () => {
 
       <Text
         rotation={[-Math.PI / 2, 0, Math.PI / 4]}
-        color="black"
+        color="white"
         position={[
           Math.floor(boardSize * 1.5) + 3,
           4.3,
@@ -124,10 +124,10 @@ const Chessboard = () => {
 
   return (
     <mesh camera={camera} >
-      <pointLight position={[5, 12.5, 5]} intensity={1} decay={2} power={1000} distance={20}/>
-      <pointLight position={[-5, 12.5, 5]} intensity={1} decay={2} power={1000} distance={20}/>
-      <pointLight position={[-5, 12.5, -5]} intensity={1} decay={2} power={1000} distance={20} />
-      <pointLight position={[5, 12.5, -5]} intensity={1} decay={2} power={1000} distance={20}/>
+      <pointLight position={[5, 15, 5]} intensity={1} decay={2} power={1500} distance={20}/>
+      <pointLight position={[-5, 15, 5]} intensity={1} decay={2} power={1500} distance={20}/>
+      <pointLight position={[-5, 15, -5]} intensity={1} decay={2} power={1500} distance={20} />
+      <pointLight position={[5, 15, -5]} intensity={1} decay={2} power={1500} distance={20}/>
       <OrbitControls
         minDistance={24}
         maxDistance={38}

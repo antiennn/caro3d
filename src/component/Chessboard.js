@@ -82,7 +82,7 @@ const Chessboard = () => {
 
   const createTile = useCallback(
     (x, z) => (
-      <group position={[x, 4, z]} key={`${x}-${z}`}>
+      <group position={[x, 4, z]} key={`${x}-${z}`} >
         <mesh position={[0, 0, 0]}>
           <boxGeometry
             args={[
@@ -114,6 +114,9 @@ const Chessboard = () => {
   const pieces = [
     <ChessPiece position={[0, 0, 0]} color="red" key="red" handlehover={handlehoverPieces} handlemoverover={handlemoveroverPieces}/>,
     <ChessPiece position={[0, 1, 0]} color="blue" key="blue" handlehover={handlehoverPieces} handlemoverover={handlemoveroverPieces}/>,
+    <ChessPiece position={[0, 2, 0]} color="blue" key="blue" handlehover={handlehoverPieces} handlemoverover={handlemoveroverPieces}/>,
+    <ChessPiece position={[0, 3, 0]} color="blue" key="blue" handlehover={handlehoverPieces} handlemoverover={handlemoveroverPieces}/>,
+    <ChessPiece position={[0, 4, 0]} color="blue" key="blue" handlehover={handlehoverPieces} handlemoverover={handlemoveroverPieces}/>,
     // <ChessPiece position={[1, 0, 0]} color="red" key="red" />,
     // <ChessPiece position={[1, 1, 0]} color="blue" key="blue" />,
     // <ChessPiece position={[1, 2, 0]} color="blue" key="blue" />,
@@ -121,7 +124,10 @@ const Chessboard = () => {
 
   return (
     <mesh camera={camera} >
-      <ambientLight intensity={0.3} />
+      <pointLight position={[5, 12.5, 5]} intensity={1} decay={2} power={1000} distance={20}/>
+      <pointLight position={[-5, 12.5, 5]} intensity={1} decay={2} power={1000} distance={20}/>
+      <pointLight position={[-5, 12.5, -5]} intensity={1} decay={2} power={1000} distance={20} />
+      <pointLight position={[5, 12.5, -5]} intensity={1} decay={2} power={1000} distance={20}/>
       <OrbitControls
         minDistance={24}
         maxDistance={38}

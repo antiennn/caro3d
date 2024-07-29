@@ -1,22 +1,27 @@
-import React,{ Suspense } from 'react'
+import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Preload, useGLTF } from "@react-three/drei";
-import Chessboard from './Chessboard';
+import Chessboard from "./Chessboard";
 
 const Scene = () => {
-    const background = useGLTF("./background_scene/scene.gltf")
-    return (
-      <>
-        <primitive object={background.scene} scale={1} position-y={0} rotation-y={0} />
-        <Chessboard/>
-      </>
-    );
-}
-const Background = () =>{
+  const background = useGLTF("./background_scene/scene.gltf");
+  return (
+    <>
+      <primitive
+        object={background.scene}
+        scale={1}
+        position-y={0}
+        rotation-y={0}
+      />
+      <Chessboard />
+    </>
+  );
+};
+const Background = () => {
   return (
     <Canvas
       shadows
-      frameloop='demand'
+      frameloop="demand"
       dpr={[1, 2]}
       gl={{ preserveDrawingBuffer: true }}
       camera={{
@@ -28,14 +33,14 @@ const Background = () =>{
     >
       <Suspense>
         <OrbitControls
-          maxPolarAngle={Math.PI /3}
-          minPolarAngle={Math.PI /8}
+          maxPolarAngle={Math.PI / 3}
+          minPolarAngle={Math.PI / 8}
         />
-        
+
         <Scene />
         <Preload all />
       </Suspense>
     </Canvas>
   );
-}
-export default Background
+};
+export default Background;

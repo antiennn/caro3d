@@ -8,7 +8,9 @@ const Chessboard = () => {
   const boardSize = 5;
   const tileSize = 2.5;
   const borderWidth = 0.5;
-  // const [pieces, setPieces] = useState([]);
+  const [hover, setHover] = useState(false);
+  const [chessPositionSuggest,setChessPositionSuggest] = useState();
+  const [location, setlocation] = useState([]);
   const [camera, setCamera] = useState(null);
   const labels = [];
   const letters = "ABCDE";
@@ -58,6 +60,25 @@ const Chessboard = () => {
       setCamera(camera);
     }
   }, []);
+  const handlehover = useCallback((x, z) => {
+    return () => {
+      console.log(x,z)
+      setChessPositionSuggest([x, 5, z]);
+      setHover(true);
+    };
+  }, []);
+  const handlemoverover = useCallback(() =>{
+    return () => {
+      setHover(false)
+    }
+  },[])
+  const handlehoverPieces =(position)=>{
+    setChessPositionSuggest(position);
+    setHover(true);
+  }
+  const handlemoveroverPieces=()=>{
+    setHover(false);
+  }
 
   const createTile = useCallback(
     (x, z) => (
@@ -72,7 +93,7 @@ const Chessboard = () => {
           />
           <meshStandardMaterial color={"#000000"} /> {/* Border color */}
         </mesh>
-        <mesh position={[0, 0.01, 0]} >
+        <mesh position={[0, 0.01, 0]} onPointerOver={handlehover(x,z)} onPointerOut={handlemoverover()}>
           <boxGeometry args={[tileSize, 0.3, tileSize]} />
           <meshStandardMaterial color={"#cef614"} /> {/* Tile color */}
         </mesh>
@@ -91,23 +112,45 @@ const Chessboard = () => {
   }
 
   const pieces = [
-    <ChessPiece position={[0, 0, 0]} color="red" key="red" />,
-    <ChessPiece position={[0, 1, 0]} color="blue" key="blue" />,
-    <ChessPiece position={[1, 0, 0]} color="red" key="red" />,
-    <ChessPiece position={[1, 1, 0]} color="blue" key="blue" />,
-    <ChessPiece position={[1, 2, 0]} color="blue" key="blue" />,
+    <ChessPiece position={[0, 0, 0]} color="red" key="red" handlehover={handlehoverPieces} handlemoverover={handlemoveroverPieces}/>,
+    <ChessPiece position={[0, 1, 0]} color="blue" key="blue" handlehover={handlehoverPieces} handlemoverover={handlemoveroverPieces}/>,
+    // <ChessPiece position={[1, 0, 0]} color="red" key="red" />,
+    // <ChessPiece position={[1, 1, 0]} color="blue" key="blue" />,
+    // <ChessPiece position={[1, 2, 0]} color="blue" key="blue" />,
   ];
 
   return (
     <mesh camera={camera} >
       <ambientLight intensity={0.3} />
       <OrbitControls
-        minDistance={35}
+        minDistance={24}
         maxDistance={38}
       />
       {tiles}
       {labels}
       {pieces}
+      {hover && (
+        <mesh position={chessPositionSuggest}>
+          <cylinderGeometry
+            args={[0.8 + 0.4,  0.8 + 0.4, 1.5 - 0.01, 5]}
+          />
+          <meshStandardMaterial color={"aqua"} transparent={true} opacity={0.7}/>
+          <lineSegments>
+          <edgesGeometry
+            attach="geometry"
+            args={[
+              new THREE.CylinderGeometry(
+                0.8 + 0.4,
+                0.8 + 0.4,
+                1.5 - 0.01,
+                5
+              ),
+            ]}
+          />
+          <lineBasicMaterial attach="material" color="black" />
+        </lineSegments>
+        </mesh>
+      )}
     </mesh>
   );
 };

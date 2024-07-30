@@ -2,7 +2,7 @@ import { useFrame } from "@react-three/fiber";
 import React, {useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
-const ChessPiece = ({ position, color,handlehover,handlemoverover }) => {
+const ChessPiece = ({ position, color,handlehover,handlemoveout,handleClick }) => {
   const radiusTop = 0.8;
   const radiusBottom = 0.8;
   const height = 1.5;
@@ -18,7 +18,7 @@ const ChessPiece = ({ position, color,handlehover,handlemoverover }) => {
     if (isAnimating) {
       // Update yPosition
       setYPosition((prev) => {
-        const newPosition = prev - 0.05;
+        const newPosition = prev - 0.2;
 
         if (newPosition < position[1] * 1.5 + 5) {
           setIsAnimating(false);
@@ -63,13 +63,17 @@ const ChessPiece = ({ position, color,handlehover,handlemoverover }) => {
         position={newPosition}
         onPointerOver={(e)=>{
           e.stopPropagation();
-          let suggest = newPosition;
-          suggest[1] += 1.5;
-          handlehover(suggest)
+          // let suggest = newPosition;
+          // suggest[1] += 1.5;
+          handlehover(newPosition)
         }}
         onPointerLeave={(e)=>{
           e.stopPropagation()
-          handlemoverover();
+          handlemoveout();
+        }}
+        onClick={(e)=>{
+          e.stopPropagation()
+          handleClick(newPosition[0],newPosition[2])
         }}
       >
         <cylinderGeometry

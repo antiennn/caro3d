@@ -101,6 +101,9 @@ const Chessboard = () => {
   const handlehoverPieces = (position) => {
     let x_location = mappingToLocation(position[0]);
     let z_location = mappingToLocation(position[2]);
+    if(location[x_location + 2][z_location + 2]== 5){
+        return
+    }
     let clone = [...position];
     clone[1] = location[x_location + 2][z_location + 2] * 1.5 + 5;
     setChessPositionSuggest(clone);
@@ -112,6 +115,9 @@ const Chessboard = () => {
   const handleClickPieces = (x, z) => {
     let x_location = mappingToLocation(x);
     let z_location = mappingToLocation(z);
+    if(location[x_location + 2][z_location + 2]==5){
+      return
+    }
     let temp_location = location;
     temp_location[x_location + 2][z_location + 2] += 1;
     setlocation(temp_location);
@@ -187,35 +193,35 @@ const Chessboard = () => {
         intensity={1}
         decay={2}
         power={2000}
-        distance={20}
+        distance={25}
       />
       <pointLight
         position={[-10, 15, 10]}
         intensity={1}
         decay={2}
         power={2000}
-        distance={20}
+        distance={25}
       />
       <pointLight
         position={[0, 15, 0]}
         intensity={1}
         decay={2}
         power={2000}
-        distance={20}
+        distance={25}
       />
       <pointLight
         position={[-10, 15, -10]}
         intensity={1}
         decay={2}
         power={2000}
-        distance={20}
+        distance={25}
       />
       <pointLight
         position={[10, 15, -10]}
         intensity={1}
         decay={2}
         power={2000}
-        distance={20}
+        distance={25}
       />
       <OrbitControls minDistance={24} maxDistance={38} />
       {tiles}

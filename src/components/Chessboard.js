@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef, useEffect } from "react";
 import * as THREE from "three";
 import { OrbitControls, Text } from "@react-three/drei";
 import ChessPiece from "./Chesspiece";
-import { initArray, initLocation, mappingToLocation } from "../utils/constants";
+import { initArray, initLocation, mappingToLocation,checkWinner } from "../utils/constants";
 import { lightFixture } from "../utils/specifications";
 
 const Chessboard = () => {
@@ -80,9 +80,14 @@ const Chessboard = () => {
     let temp_location = location;
     temp_location[x_location + 2][z_location + 2] += 1;
     setlocation(temp_location);
+
     let temp_isMyturn = isMyTurn;
     temp_isMyturn[0] = -temp_isMyturn[0];
     setIsMyTurn(temp_isMyturn);
+
+    let temp_board = board;
+    board[x_location + 2][location[x_location + 2][z_location + 2]- 1][z_location + 2] = isMyTurn[0]
+    setBoard(temp_board)
     const element = (
       <ChessPiece
         position={[
@@ -98,6 +103,10 @@ const Chessboard = () => {
       />
     );
     setPieces((prev) => [...prev, element]);
+    console.log(board)
+    if(checkWinner(board,isMyTurn[0])){
+      alert(`${isMyTurn[0]===-1?"red":"blue"} is win`)
+    }
   };
   const handlehoverPieces = (position) => {
     let x_location = mappingToLocation(position[0]);
@@ -119,12 +128,19 @@ const Chessboard = () => {
     if (location[x_location + 2][z_location + 2] === 5) {
       return;
     }
+
     let temp_location = location;
     temp_location[x_location + 2][z_location + 2] += 1;
     setlocation(temp_location);
+
     let temp_isMyturn = isMyTurn;
     temp_isMyturn[0] = -temp_isMyturn[0];
     setIsMyTurn(temp_isMyturn);
+
+    let temp_board = board;
+    board[x_location + 2][location[x_location + 2][z_location + 2] - 1][z_location + 2] = isMyTurn[0]
+    setBoard(temp_board)
+
     const element = (
       <ChessPiece
         position={[
@@ -140,6 +156,11 @@ const Chessboard = () => {
       />
     );
     setPieces((prev) => [...prev, element]);
+    console.log(board)
+
+    if(checkWinner(board,isMyTurn[0])){
+      alert(`${isMyTurn[0]===-1?"red":"blue"} is win`)
+    }
   };
 
   const createTile = useCallback(

@@ -69,11 +69,12 @@ export const checkWinner = (board, player) => {
 
   // Kiểm tra đường chéo trong mặt phẳng xy
   for (let z = 0; z < size; z++) {
-    let count1 = 0, count2 = 0;
+    let count1 = 0,
+      count2 = 0;
     for (let i = 0; i < size; i++) {
       if (board[i][i][z] === player) count1++;
       else count1 = 0;
-      if (board[i][size-i-1][z] === player) count2++;
+      if (board[i][size - i - 1][z] === player) count2++;
       else count2 = 0;
       if (count1 === winCondition || count2 === winCondition) return true;
     }
@@ -81,11 +82,12 @@ export const checkWinner = (board, player) => {
 
   // Kiểm tra đường chéo trong mặt phẳng xz
   for (let y = 0; y < size; y++) {
-    let count1 = 0, count2 = 0;
+    let count1 = 0,
+      count2 = 0;
     for (let i = 0; i < size; i++) {
       if (board[i][y][i] === player) count1++;
       else count1 = 0;
-      if (board[i][y][size-i-1] === player) count2++;
+      if (board[i][y][size - i - 1] === player) count2++;
       else count2 = 0;
       if (count1 === winCondition || count2 === winCondition) return true;
     }
@@ -93,11 +95,12 @@ export const checkWinner = (board, player) => {
 
   // Kiểm tra đường chéo trong mặt phẳng yz
   for (let x = 0; x < size; x++) {
-    let count1 = 0, count2 = 0;
+    let count1 = 0,
+      count2 = 0;
     for (let i = 0; i < size; i++) {
       if (board[x][i][i] === player) count1++;
       else count1 = 0;
-      if (board[x][i][size-i-1] === player) count2++;
+      if (board[x][i][size - i - 1] === player) count2++;
       else count2 = 0;
       if (count1 === winCondition || count2 === winCondition) return true;
     }
@@ -126,7 +129,14 @@ export const checkWinner = (board, player) => {
             const ny = y + i * dy;
             const nz = z + i * dz;
 
-            if (nx >= 0 && nx < size && ny >= 0 && ny < size && nz >= 0 && nz < size) {
+            if (
+              nx >= 0 &&
+              nx < size &&
+              ny >= 0 &&
+              ny < size &&
+              nz >= 0 &&
+              nz < size
+            ) {
               if (board[nx][ny][nz] === player) {
                 count++;
                 if (count === winCondition) return true;
@@ -141,6 +151,32 @@ export const checkWinner = (board, player) => {
       }
     }
   }
-
   return false;
-}; 
+};
+
+function mapXtoLetter(x) {
+  const index = Math.round(((x + 5) / 12) * 4);
+  const letter = String.fromCharCode(65 + index);
+  return letter;
+}
+
+function mapYtoNumber(y) {
+  const number = Math.round(((y + 5) / 12) * 4) + 1;
+  return number;
+}
+
+export const mapToLocationInLayout = (x, z) => {
+  console.log(x + "    " + z);
+  return `${mapXtoLetter(x - 1)}${mapYtoNumber(z - 1)}`;
+};
+
+export const getCurrentTime = () => {
+  const now = new Date();
+  const formattedTime = now.toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+  return formattedTime;
+};

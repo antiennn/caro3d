@@ -7,14 +7,14 @@ import { VscSignOut } from "react-icons/vsc";
 import { LoginSocialFacebook } from "reactjs-social-login";
 import { useCookies } from "react-cookie";
 import Profile from "./Profile";
-import MyContext from "../configs/MyContext";
+import { MyStateContext } from "../configs/MyContext";
 export default function Starter() {
   const [positionY, setPositionY] = useState(0);
   const [isAuthentication, setisAuthentication] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies();
   const [avatar, setavatar] = useState()
   const [name, setname] = useState()
-  const [state,dispatch] = useContext(MyContext)
+  const [state,dispatch] = useContext(MyStateContext)
   useEffect(() => {
     if (cookies.access_token) {
       setisAuthentication(true);
@@ -60,9 +60,8 @@ export default function Starter() {
             setCookie("access_token", response.data.accessToken);
             setCookie("avatar", response.data.picture.data.url);
             setCookie("name",response.data.name);
-            // setavatar(response.data.picture.data.url)
             setisAuthentication(true)
-            // console.log(response)
+            console.log(response)
           }}
           onReject={(error) => {
             console.log(error);

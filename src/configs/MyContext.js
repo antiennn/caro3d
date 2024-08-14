@@ -1,5 +1,6 @@
 import { createContext } from "react";
 
-const MyContext = createContext();
+const MyStateContext = createContext();
+const MyHistoryContext = createContext();
 
-export default MyContext;
+export  {MyStateContext,MyHistoryContext};

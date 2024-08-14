@@ -1,9 +1,22 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, {
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  useContext,
+} from "react";
 import * as THREE from "three";
 import { OrbitControls, Text } from "@react-three/drei";
 import ChessPiece from "./Chesspiece";
-import { initArray, initLocation, mappingToLocation,checkWinner } from "../utils/constants";
+import {
+  getCurrentTime,
+  initArray,
+  initLocation,
+  mappingToLocation,
+  mapToLocationInLayout,
+} from "../utils/constants";
 import { lightFixture } from "../utils/specifications";
+import { MyHistoryContext, MyStateContext } from "../configs/MyContext";
 
 const Chessboard = () => {
   const mountRef = useRef(null);
@@ -17,9 +30,10 @@ const Chessboard = () => {
   const [pieces, setPieces] = useState([]);
   const [board, setBoard] = useState(initArray);
   const [camera, setCamera] = useState(null);
+  const [history, dispatchHistory] = useContext(MyHistoryContext);
   const labels = [];
-  const letters = "ABCDE";
-  const numbers = "12345";
+  const letters = "EDCBA";
+  const numbers = "54321";
 
   for (let i = 0; i < boardSize; i++) {
     labels.push(
@@ -81,13 +95,25 @@ const Chessboard = () => {
     temp_location[x_location + 2][z_location + 2] += 1;
     setlocation(temp_location);
 
+    dispatchHistory({
+      type: "add_infomation",
+      payload: {
+        date: getCurrentTime(),
+        content: `${
+          isMyTurn[0] == 1 ? "You" : "Opponent"
+        } moved to position ${mapToLocationInLayout(x, z)}`,
+      }
+    });
+
     let temp_isMyturn = isMyTurn;
     temp_isMyturn[0] = -temp_isMyturn[0];
     setIsMyTurn(temp_isMyturn);
 
     let temp_board = board;
-    board[x_location + 2][location[x_location + 2][z_location + 2]- 1][z_location + 2] = isMyTurn[0]
-    setBoard(temp_board)
+    board[x_location + 2][location[x_location + 2][z_location + 2] - 1][
+      z_location + 2
+    ] = isMyTurn[0];
+    setBoard(temp_board);
     const element = (
       <ChessPiece
         position={[
@@ -95,18 +121,16 @@ const Chessboard = () => {
           location[x_location + 2][z_location + 2] - 1,
           z_location,
         ]}
-        color={isMyTurn[0] === -1 ? "red" : "blue"}
+        color={isMyTurn[0]}
         key={`node-${x}-${z}`}
         handlehover={handlehoverPieces}
         handlemoveout={handlemoveroverPieces}
         handleClick={handleClickPieces}
+        board={board}
       />
     );
     setPieces((prev) => [...prev, element]);
-    console.log(board)
-    if(checkWinner(board,isMyTurn[0])){
-      alert(`${isMyTurn[0]===-1?"red":"blue"} is win`)
-    }
+
   };
   const handlehoverPieces = (position) => {
     let x_location = mappingToLocation(position[0]);
@@ -133,13 +157,25 @@ const Chessboard = () => {
     temp_location[x_location + 2][z_location + 2] += 1;
     setlocation(temp_location);
 
+    dispatchHistory({
+      type: "add_infomation",
+      payload: {
+        date: getCurrentTime(),
+        content: `${
+          isMyTurn[0] == 1 ? "You" : "Opponent"
+        } moved to position ${mapToLocationInLayout(x, z)}`,
+      }
+    }); 
+
     let temp_isMyturn = isMyTurn;
     temp_isMyturn[0] = -temp_isMyturn[0];
     setIsMyTurn(temp_isMyturn);
 
     let temp_board = board;
-    board[x_location + 2][location[x_location + 2][z_location + 2] - 1][z_location + 2] = isMyTurn[0]
-    setBoard(temp_board)
+    board[x_location + 2][location[x_location + 2][z_location + 2] - 1][
+      z_location + 2
+    ] = isMyTurn[0];
+    setBoard(temp_board);
 
     const element = (
       <ChessPiece
@@ -148,19 +184,15 @@ const Chessboard = () => {
           location[x_location + 2][z_location + 2] - 1,
           z_location,
         ]}
-        color={isMyTurn[0] === -1 ? "red" : "blue"}
+        color={isMyTurn[0]}
         key={`node-${x}-${z}`}
         handlehover={handlehoverPieces}
         handlemoveout={handlemoveroverPieces}
         handleClick={handleClickPieces}
+        board={board}
       />
     );
     setPieces((prev) => [...prev, element]);
-    console.log(board)
-
-    if(checkWinner(board,isMyTurn[0])){
-      alert(`${isMyTurn[0]===-1?"red":"blue"} is win`)
-    }
   };
 
   const createTile = useCallback(

@@ -1,8 +1,16 @@
 import { useFrame } from "@react-three/fiber";
-import React, {useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { checkWinner } from "../utils/constants";
 
-const ChessPiece = ({ position, color,handlehover,handlemoveout,handleClick }) => {
+const ChessPiece = ({
+  position,
+  color,
+  handlehover,
+  handlemoveout,
+  handleClick,
+  board,
+}) => {
   const radiusTop = 0.8;
   const radiusBottom = 0.8;
   const height = 1.5;
@@ -22,6 +30,9 @@ const ChessPiece = ({ position, color,handlehover,handlemoveout,handleClick }) =
 
         if (newPosition < position[1] * 1.5 + 5) {
           setIsAnimating(false);
+          if (checkWinner(board, color)) {
+            alert(`${color === -1 ? "red" : "blue"} is win`);
+          }
           return prev;
         }
         return newPosition;
@@ -61,25 +72,25 @@ const ChessPiece = ({ position, color,handlehover,handlemoveout,handleClick }) =
       <mesh
         ref={meshRef2}
         position={newPosition}
-        onPointerOver={(e)=>{
+        onPointerOver={(e) => {
           e.stopPropagation();
           // let suggest = newPosition;
           // suggest[1] += 1.5;
-          handlehover(newPosition)
+          handlehover(newPosition);
         }}
-        onPointerLeave={(e)=>{
-          e.stopPropagation()
+        onPointerLeave={(e) => {
+          e.stopPropagation();
           handlemoveout();
         }}
-        onClick={(e)=>{
-          e.stopPropagation()
-          handleClick(newPosition[0],newPosition[2])
+        onClick={(e) => {
+          e.stopPropagation();
+          handleClick(newPosition[0], newPosition[2]);
         }}
       >
         <cylinderGeometry
           args={[radiusTop + 0.45, radiusBottom + 0.45, height - 0.01, 5]}
         />
-        <meshStandardMaterial color={color === "red" ? "#f78ca0" : "#6fbcf3"} />
+        <meshStandardMaterial color={color === -1 ? "#f78ca0" : "#6fbcf3"} />
         <lineSegments>
           <edgesGeometry
             attach="geometry"

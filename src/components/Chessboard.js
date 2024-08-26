@@ -4,6 +4,7 @@ import React, {
   useRef,
   useEffect,
   useContext,
+  useMemo,
 } from "react";
 import * as THREE from "three";
 import { OrbitControls, Text } from "@react-three/drei";
@@ -14,9 +15,13 @@ import {
   initLocation,
   mappingToLocation,
   mapToLocationInLayout,
+  mapValueToLocation,
+  checkWinner,
+  deepCopyArray3D,
 } from "../utils/constants";
 import { lightFixture } from "../utils/specifications";
 import { MyHistoryContext, MyStateContext } from "../configs/MyContext";
+import { findBestMove, minimax } from "../utils/minmaxalgorithm";
 
 const Chessboard = () => {
   const mountRef = useRef(null);
@@ -30,7 +35,9 @@ const Chessboard = () => {
   const [pieces, setPieces] = useState([]);
   const [board, setBoard] = useState(initArray);
   const [camera, setCamera] = useState(null);
+  const [bestMove, setBestMove] = useState(null);
   const [history, dispatchHistory] = useContext(MyHistoryContext);
+
   const labels = [];
   const letters = "EDCBA";
   const numbers = "54321";
@@ -80,6 +87,31 @@ const Chessboard = () => {
       setCamera(camera);
     }
   }, []);
+  useEffect(() => {
+    if (isMyTurn[0] == -1) {
+      const worker = new Worker(
+        new URL("../workers/findmove.js", import.meta.url)
+      );
+      worker.postMessage({
+        board:board,
+        depth:0,
+        isMaximizingPlayer:true
+      }); // Gửi dữ liệu tới Web Worker
+
+      worker.onmessage = function (e) {
+        setBestMove(e.data); // Nhận kết quả từ Web Worker
+      };
+
+      return () => {
+        worker.terminate(); // Hủy Worker khi component unmount
+      };
+    }
+  }, [isMyTurn[0]]);
+  useEffect(() => {
+    if (bestMove !== null) {
+      botGo(mapValueToLocation(bestMove.x), mapValueToLocation(bestMove.z));
+    }
+  }, [bestMove]);
   const handlehover = (x, z) => {
     setChessPositionSuggest([x, 5, z]);
     setHover(true);
@@ -88,7 +120,7 @@ const Chessboard = () => {
     setHover(false);
   };
 
-  const handleClick = (x, z) => {
+  const botGo = (x, z) => {
     let x_location = mappingToLocation(x);
     let z_location = mappingToLocation(z);
     let temp_location = location;
@@ -102,12 +134,8 @@ const Chessboard = () => {
         content: `${
           isMyTurn[0] == 1 ? "You" : "Opponent"
         } moved to position ${mapToLocationInLayout(x, z)}`,
-      }
+      },
     });
-
-    let temp_isMyturn = isMyTurn;
-    temp_isMyturn[0] = -temp_isMyturn[0];
-    setIsMyTurn(temp_isMyturn);
 
     let temp_board = board;
     board[x_location + 2][location[x_location + 2][z_location + 2] - 1][
@@ -131,6 +159,56 @@ const Chessboard = () => {
     );
     setPieces((prev) => [...prev, element]);
 
+    let temp_isMyturn = isMyTurn;
+    temp_isMyturn[0] = -temp_isMyturn[0];
+    setIsMyTurn(temp_isMyturn);
+  };
+
+  const handleClick = (x, z) => {
+    if (isMyTurn[0] != 1) {
+      return;
+    }
+    let x_location = mappingToLocation(x);
+    let z_location = mappingToLocation(z);
+    let temp_location = location;
+    temp_location[x_location + 2][z_location + 2] += 1;
+    setlocation(temp_location);
+
+    dispatchHistory({
+      type: "add_infomation",
+      payload: {
+        date: getCurrentTime(),
+        content: `${
+          isMyTurn[0] == 1 ? "You" : "Opponent"
+        } moved to position ${mapToLocationInLayout(x, z)}`,
+      },
+    });
+
+    let temp_board = board;
+    board[x_location + 2][location[x_location + 2][z_location + 2] - 1][
+      z_location + 2
+    ] = isMyTurn[0];
+    setBoard(temp_board);
+    const element = (
+      <ChessPiece
+        position={[
+          x_location,
+          location[x_location + 2][z_location + 2] - 1,
+          z_location,
+        ]}
+        color={isMyTurn[0]}
+        key={`node-${x}-${z}`}
+        handlehover={handlehoverPieces}
+        handlemoveout={handlemoveroverPieces}
+        handleClick={handleClickPieces}
+        board={board}
+      />
+    );
+    setPieces((prev) => [...prev, element]);
+
+    let temp_isMyturn = isMyTurn;
+    temp_isMyturn[0] = -temp_isMyturn[0];
+    setIsMyTurn(temp_isMyturn);
   };
   const handlehoverPieces = (position) => {
     let x_location = mappingToLocation(position[0]);
@@ -147,6 +225,9 @@ const Chessboard = () => {
     setHover(false);
   };
   const handleClickPieces = (x, z) => {
+    if (isMyTurn[0] != 1) {
+      return;
+    }
     let x_location = mappingToLocation(x);
     let z_location = mappingToLocation(z);
     if (location[x_location + 2][z_location + 2] === 5) {
@@ -164,12 +245,8 @@ const Chessboard = () => {
         content: `${
           isMyTurn[0] == 1 ? "You" : "Opponent"
         } moved to position ${mapToLocationInLayout(x, z)}`,
-      }
-    }); 
-
-    let temp_isMyturn = isMyTurn;
-    temp_isMyturn[0] = -temp_isMyturn[0];
-    setIsMyTurn(temp_isMyturn);
+      },
+    });
 
     let temp_board = board;
     board[x_location + 2][location[x_location + 2][z_location + 2] - 1][
@@ -193,6 +270,10 @@ const Chessboard = () => {
       />
     );
     setPieces((prev) => [...prev, element]);
+
+    let temp_isMyturn = isMyTurn;
+    temp_isMyturn[0] = -temp_isMyturn[0];
+    setIsMyTurn(temp_isMyturn);
   };
 
   const createTile = useCallback(

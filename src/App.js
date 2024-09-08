@@ -4,22 +4,32 @@ import Background from "./components/Background";
 import Information from "./components/Information";
 import Starter from "./components/Starter";
 
-import { MyHistoryContext, MyStateContext } from "./configs/MyContext";
+import {
+  MyHistoryContext,
+  MyStateContext,
+  MyUserContext,
+} from "./configs/MyContext";
 import MyStateReducer from "./hook/MyStateReducer";
 import MyHistoryReducer from "./hook/MyHistory";
+import MyUserReducer from "./hook/MyUserReducer";
+import Loading from "./components/Loading";
 function App() {
-  const [state, dispatch] = useReducer(MyStateReducer, null);
+  const [state, dispatch] = useReducer(MyStateReducer, "start");
   const [history, dispatchHistory] = useReducer(MyHistoryReducer, []);
+  const [user, dispatchuser] = useReducer(MyUserReducer, null);
   return (
     <MyStateContext.Provider value={[state, dispatch]}>
       <MyHistoryContext.Provider value={[history, dispatchHistory]}>
-        <div className="App">
-          <header className="App-header">
-            <Starter />
-            <Information />
-            <Background />
-          </header>
-        </div>
+        <MyUserContext.Provider value={[user, dispatchuser]}>
+          <div className="App">
+            <header className="App-header">
+              <Loading />
+              <Starter />
+              <Information />
+              <Background />
+            </header>
+          </div>
+        </MyUserContext.Provider>
       </MyHistoryContext.Provider>
     </MyStateContext.Provider>
   );

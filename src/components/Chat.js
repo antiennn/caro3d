@@ -22,7 +22,7 @@ export default function Chat() {
   }, [conversation]);
 
   useEffect(() => {
-    if (state === "playing") {
+    if (state !== "start") {
       setPositionY(0);
     }
   }, [state]);

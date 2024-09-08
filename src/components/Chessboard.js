@@ -4,7 +4,6 @@ import React, {
   useRef,
   useEffect,
   useContext,
-  useMemo,
 } from "react";
 import * as THREE from "three";
 import { OrbitControls, Text } from "@react-three/drei";
@@ -16,12 +15,9 @@ import {
   mappingToLocation,
   mapToLocationInLayout,
   mapValueToLocation,
-  checkWinner,
-  deepCopyArray3D,
 } from "../utils/constants";
 import { lightFixture } from "../utils/specifications";
 import { MyHistoryContext, MyStateContext } from "../configs/MyContext";
-import { findBestMove, minimax } from "../utils/minmaxalgorithm";
 
 const Chessboard = () => {
   const mountRef = useRef(null);
@@ -88,7 +84,7 @@ const Chessboard = () => {
     }
   }, []);
   useEffect(() => {
-    if (isMyTurn[0] == -1) {
+    if (isMyTurn[0] === -1) {
       const worker = new Worker(
         new URL("../workers/findmove.js", import.meta.url)
       );
@@ -132,7 +128,7 @@ const Chessboard = () => {
       payload: {
         date: getCurrentTime(),
         content: `${
-          isMyTurn[0] == 1 ? "You" : "Opponent"
+          isMyTurn[0] === 1 ? "You" : "Opponent"
         } moved to position ${mapToLocationInLayout(x, z)}`,
       },
     });
@@ -165,7 +161,7 @@ const Chessboard = () => {
   };
 
   const handleClick = (x, z) => {
-    if (isMyTurn[0] != 1) {
+    if (isMyTurn[0] !== 1) {
       return;
     }
     let x_location = mappingToLocation(x);
@@ -179,7 +175,7 @@ const Chessboard = () => {
       payload: {
         date: getCurrentTime(),
         content: `${
-          isMyTurn[0] == 1 ? "You" : "Opponent"
+          isMyTurn[0] === 1 ? "You" : "Opponent"
         } moved to position ${mapToLocationInLayout(x, z)}`,
       },
     });
@@ -197,7 +193,7 @@ const Chessboard = () => {
           z_location,
         ]}
         color={isMyTurn[0]}
-        key={`node-${x}-${z}`}
+        key={`node-${x_location}-${location[x_location + 2][z_location + 2] - 1}-${z_location}`}
         handlehover={handlehoverPieces}
         handlemoveout={handlemoveroverPieces}
         handleClick={handleClickPieces}
@@ -225,7 +221,7 @@ const Chessboard = () => {
     setHover(false);
   };
   const handleClickPieces = (x, z) => {
-    if (isMyTurn[0] != 1) {
+    if (isMyTurn[0] !== 1) {
       return;
     }
     let x_location = mappingToLocation(x);
@@ -243,7 +239,7 @@ const Chessboard = () => {
       payload: {
         date: getCurrentTime(),
         content: `${
-          isMyTurn[0] == 1 ? "You" : "Opponent"
+          isMyTurn[0] === 1 ? "You" : "Opponent"
         } moved to position ${mapToLocationInLayout(x, z)}`,
       },
     });

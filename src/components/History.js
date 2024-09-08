@@ -11,7 +11,7 @@ export default function History() {
   const idle = useRef(null);
 
   useEffect(() => {
-    if (state === "playing") {
+    if (state !== "start") {
       setPositionY(0);
     }
   }, [state]);
@@ -44,7 +44,7 @@ export default function History() {
         </item>
       </header>
       <p className="text-xl font-bold">History</p>
-      <div ref={state == "playing" ? myRef : idle} className="overflow-y-auto h-36 py-2">
+      <div ref={state != "start" ? myRef : idle} className="overflow-y-auto h-36 py-2">
         <div>
           {history.map((e, idx) => {
             return (

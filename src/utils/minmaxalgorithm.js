@@ -14,7 +14,7 @@ export function findLimitdepth(array) {
   for (let i = 0; i < 5; i++) {
     for (let j = 0; j < 5; j++) {
       for (let k = 0; k < 5; k++) {
-        if (array[i][j][k] != 0) {
+        if (array[i][j][k] !== 0) {
           count++;
         }
       }
@@ -36,9 +36,9 @@ function findbesttempmove(board, bestMoves) {
         return { x: randInt(0, 4), z: randInt(0, 4) };
       }
     } while (
-      board[x][y][z] != 0 ||
-      (x + z) % 2 != 0 ||
-      y != findLowestY(board, x, z)
+      board[x][y][z] !== 0 ||
+      (x + z) % 2 !== 0 ||
+      y !== findLowestY(board, x, z)
     );
     if (count < 20) {
       return { x, z };
@@ -87,7 +87,7 @@ export function minimax(board, depth, isMaximizingPlayer, alpha, beta,limitdepth
             obj.bestScore = newobj.bestScore;
             obj.z = z;
             obj.x = x;
-          } else if (newobj.bestScore == obj.bestScore) {
+          } else if (newobj.bestScore === obj.bestScore) {
             bestMoves = [...bestMoves, { x, z }];
           }
           alpha = Math.max(alpha, obj.bestScore);
@@ -95,7 +95,7 @@ export function minimax(board, depth, isMaximizingPlayer, alpha, beta,limitdepth
         }
       }
     }
-    if (depth == 0 && bestMoves.length == 25) {
+    if (depth === 0 && bestMoves.length === 25) {
       let res = findbesttempmove(board, bestMoves);
       obj.x = res.x;
       obj.z = res.z;

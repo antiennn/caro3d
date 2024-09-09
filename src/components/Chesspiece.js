@@ -26,7 +26,7 @@ const ChessPiece = ({
     if (isAnimating) {
       // Update yPosition
       setYPosition((prev) => {
-        const newPosition = prev - 0.2;
+        const newPosition = prev - 0.1;
 
         if (newPosition < position[1] * 1.5 + 5) {
           setIsAnimating(false);

@@ -20,7 +20,7 @@ export function findLimitdepth(array) {
       }
     }
   }
-  return count > 10 ? 7 : 5;
+  return count > 10 ? 6 : 5;
 }
 function findbesttempmove(board, bestMoves) {
   let count = 0;
@@ -78,9 +78,7 @@ export function minimax(board, depth, isMaximizingPlayer, alpha, beta,limitdepth
         if (y !== -1) {
           board[x][y][z] = -1; // Maximizing player
           let newobj = minimax(board, depth + 1, false, alpha, beta,limitdepth);
-          if (!depth) {
-            console.log(x, "   ", z, "    ", newobj.bestScore);
-          }
+          
           board[x][y][z] = 0;
           if (obj.bestScore < newobj.bestScore) {
             bestMoves = [{ x, z }];
@@ -112,7 +110,7 @@ export function minimax(board, depth, isMaximizingPlayer, alpha, beta,limitdepth
         let y = findLowestY(board, x, z);
         if (y !== -1) {
           board[x][y][z] = 1; // Minimizing player
-          let newobj = minimax(board, depth + 1, true, alpha, beta);
+          let newobj = minimax(board, depth + 1, true, alpha, beta,limitdepth);
           board[x][y][z] = 0;
           if (obj.bestScore > newobj.bestScore) {
             obj.bestScore = newobj.bestScore;

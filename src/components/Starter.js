@@ -66,8 +66,17 @@ export default function Starter() {
       payload:"waiting",
     })
   }
+  useEffect(()=>{    
+    const returnstartlayout = () =>{
+      if(state === "start"){
+        
+        setPositionY(0)
+      }
+    }
+    returnstartlayout();
+  },[state])
   return (
-    <div style={{transform: `translateY(${positionY}px)`,transition: "transform 0.5s ease"}} className="absolute top-0 w-[100vw] h-[100vh] bg-[#28282870] z-50 flex justify-start items-center flex-col gap-10">
+    <div style={{transform: `translateY(${positionY}px)`,transition: "transform 0.5s ease"}} className="absolute top-0 w-[100vw] h-[100vh] bg-[#28282870] z-40 flex justify-start items-center flex-col gap-10">
         <Profile avatar={avatar} name={name}/>
       <img src={logo} className="w-25 h-25" alt="loading..." />
       <div class="option flex justify-center gap-10">

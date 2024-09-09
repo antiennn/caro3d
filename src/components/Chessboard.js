@@ -17,13 +17,14 @@ import {
   mapValueToLocation,
 } from "../utils/constants";
 import { lightFixture } from "../utils/specifications";
-import { MyHistoryContext, MyStateContext } from "../configs/MyContext";
+import { MyHistoryContext, MyStateContext, MyWaitingContext } from "../configs/MyContext";
 
 const Chessboard = () => {
   const mountRef = useRef(null);
   const boardSize = 5;
   const tileSize = 2.5;
   const borderWidth = 0.5;
+  const [waiting,dispatchqwaiting] = useContext(MyWaitingContext);
   const [isMyTurn, setIsMyTurn] = useState([1]);
   const [hover, setHover] = useState(false);
   const [chessPositionSuggest, setChessPositionSuggest] = useState();
@@ -85,17 +86,19 @@ const Chessboard = () => {
   }, []);
   useEffect(() => {
     if (isMyTurn[0] === -1) {
+      dispatchqwaiting({type:"waiting",payload:true})
       const worker = new Worker(
         new URL("../workers/findmove.js", import.meta.url)
       );
       worker.postMessage({
-        board:board,
-        depth:0,
-        isMaximizingPlayer:true
+        board: board,
+        depth: 0,
+        isMaximizingPlayer: true,
       }); // Gửi dữ liệu tới Web Worker
 
       worker.onmessage = function (e) {
         setBestMove(e.data); // Nhận kết quả từ Web Worker
+        dispatchqwaiting({type:"waiting",payload:false})
       };
 
       return () => {
@@ -193,7 +196,9 @@ const Chessboard = () => {
           z_location,
         ]}
         color={isMyTurn[0]}
-        key={`node-${x_location}-${location[x_location + 2][z_location + 2] - 1}-${z_location}`}
+        key={`node-${x_location}-${
+          location[x_location + 2][z_location + 2] - 1
+        }-${z_location}`}
         handlehover={handlehoverPieces}
         handlemoveout={handlemoveroverPieces}
         handleClick={handleClickPieces}
@@ -318,43 +323,50 @@ const Chessboard = () => {
   }
 
   return (
-    <mesh camera={camera}>
-      {lightFixture.map((e) => {
-        return (
-          <pointLight
-            position={e}
-            intensity={1}
-            decay={2}
-            power={2000}
-            distance={25}
-          />
-        );
-      })}
-
-      <OrbitControls minDistance={24} maxDistance={38} />
-      {tiles}
-      {labels}
-      {pieces}
-      {hover && (
-        <mesh position={chessPositionSuggest}>
-          <cylinderGeometry args={[0.8 + 0.4, 0.8 + 0.4, 1.5 - 0.01, 5]} />
-          <meshStandardMaterial
-            color={"aqua"}
-            transparent={true}
-            opacity={0.7}
-          />
-          <lineSegments>
-            <edgesGeometry
-              attach="geometry"
-              args={[
-                new THREE.CylinderGeometry(0.8 + 0.4, 0.8 + 0.4, 1.5 - 0.01, 5),
-              ]}
+    <>
+      <mesh camera={camera}>
+        {lightFixture.map((e) => {
+          return (
+            <pointLight
+              position={e}
+              intensity={1}
+              decay={2}
+              power={2000}
+              distance={25}
             />
-            <lineBasicMaterial attach="material" color="black" />
-          </lineSegments>
-        </mesh>
-      )}
-    </mesh>
+          );
+        })}
+
+        <OrbitControls minDistance={24} maxDistance={38} />
+        {tiles}
+        {labels}
+        {pieces}
+        {hover && (
+          <mesh position={chessPositionSuggest}>
+            <cylinderGeometry args={[0.8 + 0.4, 0.8 + 0.4, 1.5 - 0.01, 5]} />
+            <meshStandardMaterial
+              color={"aqua"}
+              transparent={true}
+              opacity={0.7}
+            />
+            <lineSegments>
+              <edgesGeometry
+                attach="geometry"
+                args={[
+                  new THREE.CylinderGeometry(
+                    0.8 + 0.4,
+                    0.8 + 0.4,
+                    1.5 - 0.01,
+                    5
+                  ),
+                ]}
+              />
+              <lineBasicMaterial attach="material" color="black" />
+            </lineSegments>
+          </mesh>
+        )}
+      </mesh>
+    </>
   );
 };
 

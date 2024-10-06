@@ -60,7 +60,6 @@ export default function Loading() {
           <p className="text-5xl p-5 after:content-['.'] after:absolute after:ml-1 after:animate-dot-flash">
             Finding Opponent
           </p>
-
           <div
             onClick={handleCancel}
             className="px-5 py-2 bg-white text-gray-700 rounded-xl cursor-pointer"

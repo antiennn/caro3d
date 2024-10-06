@@ -55,9 +55,7 @@ export function minimax(board, depth, isMaximizingPlayer, alpha, beta,limitdepth
     return {
       x: -1,
       z: -1,
-      bestScore: isMaximizingPlayer
-        ? score + depth / 1000
-        : score - depth / 1000,
+      bestScore: score
     };
   }
   let bestMoves = [];
